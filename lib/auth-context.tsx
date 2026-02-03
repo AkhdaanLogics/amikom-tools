@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import { createBrowserClient } from "./supabase";
+import { getBrowserClient } from "./supabase";
 
 type AuthContextType = {
   user: User | null;
@@ -15,7 +15,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Create singleton client
-const supabase = createBrowserClient();
+const supabase = getBrowserClient();
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);

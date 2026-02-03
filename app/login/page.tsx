@@ -23,13 +23,21 @@ export default function LoginPage() {
     try {
       if (isSignUp) {
         await signUpWithEmail(email, password);
-        alert("Cek email untuk verifikasi akun!");
+        alert("Akun berhasil dibuat! Silakan login.");
+        setIsSignUp(false);
       } else {
         await signInWithEmail(email, password);
         router.push("/dashboard");
       }
     } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan");
+      const message = err.message || "Terjadi kesalahan";
+      if (message.includes("Invalid login credentials")) {
+        setError("Email atau password salah");
+      } else if (message.includes("Email not confirmed")) {
+        setError("Email belum diverifikasi. Cek inbox Anda.");
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }

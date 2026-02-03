@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Link2 } from "lucide-react";
-import { createBrowserClient } from "@/lib/supabase";
+import { getBrowserClient } from "@/lib/supabase";
 
 export default function ShortenPage() {
   const [url, setUrl] = useState("");
@@ -16,7 +16,7 @@ export default function ShortenPage() {
     setLoading(true);
 
     // Get user session token
-    const supabase = createBrowserClient();
+    const supabase = getBrowserClient();
     const {
       data: { session },
     } = await supabase.auth.getSession();
