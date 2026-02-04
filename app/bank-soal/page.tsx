@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { GraduationCap, ArrowRight, ArrowLeft } from "lucide-react";
+import { BookOpen, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+
+type Program = {
+  name: string;
+  shortName: string;
+  link?: string;
+};
 
 type Faculty = {
   name: string;
-  programs: {
-    name: string;
-    shortName: string;
-    link?: string;
-  }[];
+  programs: Program[];
 };
 
 const faculties: Faculty[] = [
@@ -20,90 +22,38 @@ const faculties: Faculty[] = [
       {
         name: "S1 Informatika",
         shortName: "IF",
-        link: "https://informatika.amikom.ac.id/dosen-prodi-informatika/",
+        link: "https://drive.google.com/drive/folders/1YZWO_uPJ8R3AE6kmbxGAccENbtJjPVzH",
       },
-      {
-        name: "S1 Sistem Informasi",
-        shortName: "SI",
-        link: "https://si.amikom.ac.id/dosen-prodi/",
-      },
-      {
-        name: "S1 Teknologi Informasi",
-        shortName: "TI",
-        link: "https://teknoin.amikom.ac.id/page/dosen",
-      },
-      {
-        name: "S1 Teknik Komputer",
-        shortName: "TK",
-        link: "https://tk.amikom.ac.id/dosen",
-      },
-      {
-        name: "D3 Teknik Informatika",
-        shortName: "D3-TI",
-        link: "https://d3ti.amikom.ac.id/page/dosen-prodi",
-      },
-      {
-        name: "D3 Manajemen Informatika",
-        shortName: "D3-MI",
-        link: "https://mi.amikom.ac.id/page/dosen",
-      },
+      { name: "S1 Sistem Informasi", shortName: "SI", link: "" },
+      { name: "S1 Teknologi Informasi", shortName: "TI", link: "" },
+      { name: "S1 Teknik Komputer", shortName: "TK", link: "" },
+      { name: "D3 Teknik Informatika", shortName: "D3-TI", link: "" },
+      { name: "D3 Manajemen Informatika", shortName: "D3-MI", link: "" },
       { name: "Prodi Internasional", shortName: "INTL", link: "" },
     ],
   },
   {
     name: "Fakultas Ekonomi dan Sosial (FES)",
     programs: [
-      {
-        name: "S1 Ekonomi",
-        shortName: "AK",
-        link: "https://ekonomi.amikom.ac.id/page/dosen-tetap-program-studi-ekonomi",
-      },
-      {
-        name: "S1 Akuntansi",
-        shortName: "AK",
-        link: "https://akuntansi.amikom.ac.id/page/profil-pengajar",
-      },
-      {
-        name: "S1 Ilmu Komunikasi",
-        shortName: "KOM",
-        link: "https://ilmukomunikasi.amikom.ac.id/page/dosen-prodi-ilmu-komunikasi",
-      },
-      {
-        name: "S1 Kewirausahaan",
-        shortName: "KWU",
-        link: "https://kewirausahaan.amikom.ac.id/page/dosen-prodi",
-      },
-      {
-        name: "S1 Ilmu Pemerintahan",
-        shortName: "IP",
-        link: "https://ip.amikom.ac.id/page/tenaga-pengajar",
-      },
+      { name: "S1 Ekonomi", shortName: "EK", link: "" },
+      { name: "S1 Akuntansi", shortName: "AK", link: "" },
+      { name: "S1 Ilmu Komunikasi", shortName: "KOM", link: "" },
+      { name: "S1 Kewirausahaan", shortName: "KWU", link: "" },
+      { name: "S1 Ilmu Pemerintahan", shortName: "IP", link: "" },
       { name: "S1 Hubungan Internasional", shortName: "HI", link: "" },
     ],
   },
   {
     name: "Fakultas Sains dan Teknologi (FST)",
     programs: [
-      {
-        name: "S1 Arsitektur",
-        shortName: "AR",
-        link: "https://prodiarsitektur.amikom.ac.id/page/dosen",
-      },
-      {
-        name: "S1 Geografi",
-        shortName: "GG",
-        link: "https://geografi.amikom.ac.id/page/dosen",
-      },
-      {
-        name: "S1 Perencanaan Wilayah dan Kota",
-        shortName: "PWK",
-        link: "https://pwk.amikom.ac.id/page/dosen",
-      },
+      { name: "S1 Arsitektur", shortName: "AR", link: "" },
+      { name: "S1 Geografi", shortName: "GG", link: "" },
+      { name: "S1 Perencanaan Wilayah dan Kota", shortName: "PWK", link: "" },
     ],
   },
 ];
 
-export default function InfoDosenPage() {
+export default function BankSoalPage() {
   const [selectedFaculty, setSelectedFaculty] = useState<Faculty | null>(null);
 
   return (
@@ -147,15 +97,14 @@ export default function InfoDosenPage() {
               <div className="mb-12 text-center">
                 <div className="mb-4 flex justify-center">
                   <div className="rounded-full bg-purple-600/20 p-4">
-                    <GraduationCap size={48} className="text-purple-400" />
+                    <BookOpen size={48} className="text-purple-400" />
                   </div>
                 </div>
                 <h1 className="mb-4 text-4xl font-bold md:text-5xl">
-                  Info Dosen
+                  Bank Soal
                 </h1>
                 <p className="text-purple-200">
-                  Informasi dosen per prodi dengan redirect ke website resmi
-                  fakultas
+                  Kumpulan soal ujian dan latihan dari himpunan prodi
                 </p>
               </div>
 
@@ -191,7 +140,7 @@ export default function InfoDosenPage() {
                   {selectedFaculty.name}
                 </h1>
                 <p className="text-purple-200">
-                  Pilih program studi untuk melihat informasi dosen
+                  Pilih program studi untuk mengakses bank soal
                 </p>
               </div>
 
@@ -218,7 +167,7 @@ export default function InfoDosenPage() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-3 text-sm font-semibold transition-all hover:scale-105"
                         >
-                          Lihat Info Dosen
+                          Akses Bank Soal
                           <ArrowRight size={16} />
                         </a>
                       ) : (
@@ -237,21 +186,21 @@ export default function InfoDosenPage() {
           <div className="mx-auto mt-16 max-w-4xl">
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6">
-                <h3 className="mb-2 font-semibold">Terstruktur</h3>
+                <h3 className="mb-2 font-semibold">Per Prodi</h3>
                 <p className="text-sm text-purple-100/70">
-                  Informasi dosen terorganisir per prodi dan fakultas
+                  Soal dikelola oleh masing-masing himpunan prodi
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6">
-                <h3 className="mb-2 font-semibold">Mudah Diakses</h3>
+                <h3 className="mb-2 font-semibold">Google Drive</h3>
                 <p className="text-sm text-purple-100/70">
-                  Langsung redirect ke website resmi fakultas AMIKOM
+                  Akses langsung ke koleksi soal di Google Drive
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6">
-                <h3 className="mb-2 font-semibold">Update Berkala</h3>
+                <h3 className="mb-2 font-semibold">Selalu Update</h3>
                 <p className="text-sm text-purple-100/70">
-                  Informasi selalu terbaru sesuai data dari universitas
+                  Soal terus ditambahkan oleh himpunan prodi
                 </p>
               </div>
             </div>
