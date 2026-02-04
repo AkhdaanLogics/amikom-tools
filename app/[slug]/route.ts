@@ -1,37 +1,32 @@
-import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+// app/[slug]/route.ts
+import { redirect } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
 
 export async function GET(
-  req: Request,
+  request: Request,
   context: { params: Promise<{ slug: string }> },
 ) {
-  const { slug } = await context.params;
-
+  const params = await context.params;
   const { data, error } = await supabase
     .from("short_urls")
-    .select("*")
-    .eq("slug", slug)
+    .select("original_url, clicks")
+    .eq("slug", params.slug)
     .single();
 
-  if (error || !data) {
-    return NextResponse.redirect(new URL("/", req.url));
+  if (error || !data?.original_url) {
+    return new Response("Link not found", { status: 404 });
   }
 
-  // ⛔ CEK EXPIRED
-  if (data.expires_at && new Date(data.expires_at) < new Date()) {
-    return NextResponse.redirect(new URL("/expired", req.url));
-  }
-
-  // 🔧 FIX URL
-  let targetUrl = data.original_url;
-  if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
-    targetUrl = "https://" + targetUrl;
-  }
-
+  // Update click count
   await supabase
     .from("short_urls")
-    .update({ clicks: data.clicks + 1 })
-    .eq("slug", slug);
+    .update({ clicks: (data.clicks || 0) + 1 })
+    .eq("slug", params.slug);
 
-  return NextResponse.redirect(targetUrl);
+  redirect(data.original_url);
 }

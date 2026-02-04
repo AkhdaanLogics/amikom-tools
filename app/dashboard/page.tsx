@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getBrowserClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -31,7 +30,6 @@ export default function DashboardPage() {
   const [deleteModal, setDeleteModal] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const router = useRouter();
-  const supabase = getBrowserClient();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -46,31 +44,61 @@ export default function DashboardPage() {
   }, [user]);
 
   const fetchLinks = async () => {
-    const { data, error } = await supabase
-      .from("short_urls")
-      .select("*")
-      .eq("user_id", user?.id)
-      .order("created_at", { ascending: false });
+    if (!user) return;
 
-    if (!error && data) {
-      setLinks(data);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch("/api/links", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setLinks(data);
+      }
+    } catch (error) {
+      console.error("Error fetching links:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const deleteLink = async (id: string) => {
-    setDeleteLoading(true);
-    const { error } = await supabase.from("short_urls").delete().eq("id", id);
+    if (!user) return;
 
-    if (!error) {
-      // Re-fetch data untuk ensure data terbaru
-      await fetchLinks();
-    } else {
+    setDeleteLoading(true);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch(`/api/links/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        // Re-fetch data untuk ensure data terbaru
+        await fetchLinks();
+      } else {
+        const text = await res.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(text);
+        } catch {
+          errorData = { error: text || `HTTP ${res.status}` };
+        }
+        console.error("Delete failed:", res.status, errorData);
+        alert("Gagal menghapus link: " + (errorData.error || "Unknown error"));
+      }
+    } catch (error) {
       console.error("Delete error:", error);
-      alert("Gagal menghapus link: " + error.message);
+      alert("Gagal menghapus link");
+    } finally {
+      setDeleteLoading(false);
+      setDeleteModal(null);
     }
-    setDeleteLoading(false);
-    setDeleteModal(null);
   };
 
   const copyToClipboard = (slug: string) => {

@@ -2,31 +2,27 @@
 
 import { useState } from "react";
 import { Check, Copy, Link2 } from "lucide-react";
-import { getBrowserClient } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth-context";
 
 export default function ShortenPage() {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { user } = useAuth();
 
   const submit = async () => {
     if (!url) return alert("URL tidak boleh kosong");
 
     setLoading(true);
 
-    // Get user session token
-    const supabase = getBrowserClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
-    if (session?.access_token) {
-      headers["Authorization"] = `Bearer ${session.access_token}`;
+    if (user) {
+      const token = await user.getIdToken();
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const res = await fetch("/api/shorten", {
