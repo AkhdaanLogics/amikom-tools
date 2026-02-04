@@ -167,14 +167,14 @@ export default function HomePage() {
                 Hitung IPK dan prediksi nilai semester dengan mudah.
               </Card>
 
-              <Card
-                disabled
-                icon={<QrCode size={28} />}
-                title="QR Code Generator"
-                badge="Segera hadir"
-              >
-                Generate QR code untuk link, teks, atau kontak dengan mudah.
-              </Card>
+              <Link href="/qr-generator" className="group">
+                <Card
+                  icon={<QrCode size={28} />}
+                  title="QR Code Generator"
+                >
+                  Generate QR code untuk link, teks, atau kontak dengan mudah.
+                </Card>
+              </Link>
             </div>
           </div>
         </section>
