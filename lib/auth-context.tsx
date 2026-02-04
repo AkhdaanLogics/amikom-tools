@@ -9,11 +9,24 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
+
+export type UserProfile = {
+  fullName: string;
+  nim: string;
+  prodi: string;
+  faculty: string;
+  phone?: string;
+  updatedAt?: string;
+};
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
+  profile: UserProfile | null;
+  profileLoading: boolean;
+  refreshProfile: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -25,11 +38,41 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+
+  const loadProfile = async (uid: string) => {
+    setProfileLoading(true);
+    try {
+      const docRef = doc(db, "profiles", uid);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        setProfile(snap.data() as UserProfile);
+      } else {
+        setProfile(null);
+      }
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const refreshProfile = async () => {
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+    await loadProfile(user.uid);
+  };
 
   useEffect(() => {
     // Listen for auth state changes
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       setUser(authUser ?? null);
+      if (authUser) {
+        await loadProfile(authUser.uid);
+      } else {
+        setProfile(null);
+      }
       setLoading(false);
     });
 
@@ -61,6 +104,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         loading,
+        profile,
+        profileLoading,
+        refreshProfile,
         signInWithEmail,
         signUpWithEmail,
         signInWithGoogle,

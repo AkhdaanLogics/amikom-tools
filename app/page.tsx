@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -6,10 +9,46 @@ import {
   FileText,
   Merge,
   Quote,
+  GraduationCap,
+  BookOpen,
+  Calculator,
+  QrCode,
 } from "lucide-react";
 import AddToHomeButton from "@/components/add-to-home-button";
+import { useAuth } from "@/lib/auth-context";
+import { isStudentEmail } from "@/lib/student-validator";
+import Toast from "@/components/toast";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function HomePage() {
+  const { user } = useAuth();
+  const isStudent = user && isStudentEmail(user.email);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "info" | "success" | "error";
+  } | null>(null);
+
+  const showToast = (
+    message: string,
+    type: "info" | "success" | "error" = "info",
+  ) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  useEffect(() => {
+    const welcome = searchParams.get("welcome");
+    if (welcome) {
+      showToast(
+        welcome === "back" ? "Selamat datang kembali!" : "Login berhasil!",
+        "success",
+      );
+      router.replace("/");
+    }
+  }, [searchParams, router]);
+
   return (
     <main className="min-h-screen bg-slate-950 text-white pt-20">
       <div className="relative overflow-hidden">
@@ -30,8 +69,8 @@ export default function HomePage() {
                 </span>
               </h1>
               <p className="mt-4 text-lg text-purple-100">
-                Template laporan, ujian online, dan merge PDF dalam satu
-                platform yang cepat dan simpel.
+                Template laporan, bank soal, info dosen, dan berbagai tools
+                untuk mendukung produktivitas akademik kamu.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <AddToHomeButton />
@@ -45,29 +84,96 @@ export default function HomePage() {
             </div>
 
             <div id="fitur" className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card
-                disabled
-                icon={<FileText size={28} />}
-                title="Template Laporan"
-                badge="Segera hadir"
-              >
-                Buat laporan akademik otomatis dan export ke PDF dengan cepat.
-              </Card>
+              {isStudent ? (
+                <Link href="/templates" className="group">
+                  <Card
+                    icon={<FileText size={28} />}
+                    title="Template Laporan"
+                    badge="Khusus Mahasiswa Amikom"
+                  >
+                    Template laporan UTS, UAS, kelompok, individu, dan berbagai
+                    format akademik lainnya.
+                  </Card>
+                </Link>
+              ) : (
+                <Card
+                  disabled
+                  icon={<FileText size={28} />}
+                  title="Template Laporan"
+                  badge="Khusus Mahasiswa Amikom"
+                >
+                  Template laporan UTS, UAS, kelompok, individu, dan berbagai
+                  format akademik lainnya.
+                </Card>
+              )}
 
-              <Card
-                disabled
-                icon={<ClipboardList size={28} />}
-                title="Ujian Online"
-                badge="Segera hadir"
-              >
-                Sistem ujian berbasis web dengan timer dan nilai otomatis.
-              </Card>
+              {isStudent ? (
+                <Link href="/bank-soal" className="group">
+                  <Card
+                    icon={<BookOpen size={28} />}
+                    title="Bank Soal"
+                    badge="Khusus Mahasiswa Amikom"
+                  >
+                    Kumpulan soal ujian dan latihan dari berbagai mata kuliah.
+                  </Card>
+                </Link>
+              ) : (
+                <Card
+                  disabled
+                  icon={<BookOpen size={28} />}
+                  title="Bank Soal"
+                  badge="Khusus Mahasiswa Amikom"
+                >
+                  Kumpulan soal ujian dan latihan dari berbagai mata kuliah.
+                </Card>
+              )}
+
+              {isStudent ? (
+                <Link href="/info-dosen" className="group">
+                  <Card
+                    icon={<GraduationCap size={28} />}
+                    title="Info Dosen"
+                    badge="Khusus Mahasiswa Amikom"
+                  >
+                    Informasi dosen per prodi dengan redirect ke website resmi
+                    fakultas.
+                  </Card>
+                </Link>
+              ) : (
+                <Card
+                  disabled
+                  icon={<GraduationCap size={28} />}
+                  title="Info Dosen"
+                  badge="Khusus Mahasiswa Amikom"
+                >
+                  Informasi dosen per prodi dengan redirect ke website resmi
+                  fakultas.
+                </Card>
+              )}
 
               <Link href="/pdf" className="group">
                 <Card icon={<Merge size={28} />} title="PDF Merger">
                   Gabung multiple PDF, atur urutan, dan download dengan mudah.
                 </Card>
               </Link>
+
+              <Card
+                disabled
+                icon={<Calculator size={28} />}
+                title="Kalkulator IPK"
+                badge="Segera hadir"
+              >
+                Hitung IPK dan prediksi nilai semester dengan mudah.
+              </Card>
+
+              <Card
+                disabled
+                icon={<QrCode size={28} />}
+                title="QR Code Generator"
+                badge="Segera hadir"
+              >
+                Generate QR code untuk link, teks, atau kontak dengan mudah.
+              </Card>
             </div>
           </div>
         </section>
@@ -243,6 +349,14 @@ export default function HomePage() {
           </p>
         </div>
       </footer>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </main>
   );
 }

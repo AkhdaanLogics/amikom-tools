@@ -5,6 +5,10 @@ import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, LogIn, Mail, CheckCircle } from "lucide-react";
+import Toast from "@/components/toast";
+import { isStudentEmail } from "@/lib/student-validator";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,8 +17,39 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "info" | "success" | "error";
+  } | null>(null);
   const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
   const router = useRouter();
+
+  const showToast = (
+    message: string,
+    type: "info" | "success" | "error" = "info",
+  ) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  const redirectAfterLogin = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      router.push("/");
+      return;
+    }
+
+    try {
+      const snap = await getDoc(doc(db, "profiles", currentUser.uid));
+      if (snap.exists()) {
+        router.push("/?welcome=back");
+      } else {
+        router.push("/profile");
+      }
+    } catch {
+      router.push("/");
+    }
+  };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +59,15 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
+        // Validasi email student saat sign up
+        if (!isStudentEmail(email)) {
+          showToast(
+            "Gunakan email mahasiswa AMIKOM dengan format @students.amikom.ac.id untuk mendaftar.",
+            "error",
+          );
+          setLoading(false);
+          return;
+        }
         await signUpWithEmail(email, password);
         setSuccess("Akun berhasil dibuat! Silakan login.");
         setIsSignUp(false);
@@ -32,7 +76,7 @@ export default function LoginPage() {
         setTimeout(() => setSuccess(""), 3000);
       } else {
         await signInWithEmail(email, password);
-        router.push("/dashboard");
+        await redirectAfterLogin();
       }
     } catch (err: any) {
       const message = err.message || "Terjadi kesalahan";
@@ -60,7 +104,7 @@ export default function LoginPage() {
 
     try {
       await signInWithGoogle();
-      router.push("/dashboard");
+      await redirectAfterLogin();
     } catch (err: any) {
       const message = err.message || "Terjadi kesalahan saat login Google";
       setError(message);
@@ -195,6 +239,15 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
