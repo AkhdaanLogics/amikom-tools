@@ -18,13 +18,10 @@ import AddToHomeButton from "@/components/add-to-home-button";
 import { useAuth } from "@/lib/auth-context";
 import { isStudentEmail } from "@/lib/student-validator";
 import Toast from "@/components/toast";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export default function HomePage() {
   const { user } = useAuth();
   const isStudent = user && isStudentEmail(user.email);
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [toast, setToast] = useState<{
     message: string;
     type: "info" | "success" | "error";
@@ -39,15 +36,19 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    const welcome = searchParams.get("welcome");
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const welcome = params.get("welcome");
     if (welcome) {
       showToast(
         welcome === "back" ? "Selamat datang kembali!" : "Login berhasil!",
         "success",
       );
-      router.replace("/");
+      params.delete("welcome");
+      const newUrl = params.toString() ? `/?${params.toString()}` : "/";
+      window.history.replaceState(null, "", newUrl);
     }
-  }, [searchParams, router]);
+  }, []);
 
   return (
     <main className="min-h-screen bg-slate-950 text-white pt-20">
