@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, LogIn, Mail } from "lucide-react";
+import { ArrowLeft, LogIn, Mail, CheckCircle } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,21 +12,24 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
   const router = useRouter();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
       if (isSignUp) {
         await signUpWithEmail(email, password);
-        alert("Akun berhasil dibuat! Silakan login.");
+        setSuccess("Akun berhasil dibuat! Silakan login.");
         setIsSignUp(false);
         setEmail("");
         setPassword("");
+        setTimeout(() => setSuccess(""), 3000);
       } else {
         await signInWithEmail(email, password);
         router.push("/dashboard");
@@ -39,6 +42,10 @@ export default function LoginPage() {
         setError("Email belum diverifikasi. Cek inbox Anda.");
       } else if (message.includes("already in use")) {
         setError("Email sudah terdaftar");
+      } else if (message.includes("invalid-email")) {
+        setError("Format email tidak valid");
+      } else if (message.includes("weak-password")) {
+        setError("Password minimal 6 karakter");
       } else {
         setError(message);
       }
@@ -91,6 +98,13 @@ export default function LoginPage() {
               {error && (
                 <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-200">
                   {error}
+                </div>
+              )}
+
+              {success && (
+                <div className="mb-4 rounded-lg bg-green-500/10 border border-green-500/20 p-3 text-sm text-green-200 flex items-center gap-2">
+                  <CheckCircle size={16} />
+                  {success}
                 </div>
               )}
 

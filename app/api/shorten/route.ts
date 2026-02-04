@@ -12,11 +12,16 @@ function decodeJWT(token: string) {
   try {
     const parts = token.split(".");
     if (parts.length !== 3) return null;
-    const payload = JSON.parse(
-      Buffer.from(parts[1], "base64").toString("utf-8"),
-    );
+    
+    // Decode base64url manually (tanpa Buffer)
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padding = '='.repeat((4 - base64.length % 4) % 4);
+    const decoded = atob(base64 + padding);
+    
+    const payload = JSON.parse(decoded);
     return payload;
   } catch (error) {
+    console.error("JWT decode error:", error);
     return null;
   }
 }
