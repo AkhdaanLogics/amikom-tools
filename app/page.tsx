@@ -158,20 +158,14 @@ export default function HomePage() {
                 </Card>
               </Link>
 
-              <Card
-                disabled
-                icon={<Calculator size={28} />}
-                title="Kalkulator IPK"
-                badge="Segera hadir"
-              >
-                Hitung IPK dan prediksi nilai semester dengan mudah.
-              </Card>
+              <Link href="/kalkulator-ipk" className="group">
+                <Card icon={<Calculator size={28} />} title="Kalkulator IPK">
+                  Hitung IPK dan prediksi nilai semester dengan mudah.
+                </Card>
+              </Link>
 
               <Link href="/qr-generator" className="group">
-                <Card
-                  icon={<QrCode size={28} />}
-                  title="QR Code Generator"
-                >
+                <Card icon={<QrCode size={28} />} title="QR Code Generator">
                   Generate QR code untuk link, teks, atau kontak dengan mudah.
                 </Card>
               </Link>
