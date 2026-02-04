@@ -1,6 +1,6 @@
 const sharp = require("sharp");
 
-const iconPath = "./app/icon.png";
+const iconPath = "./public/icon-app.png";
 
 // Generate 192x192
 sharp(iconPath)
