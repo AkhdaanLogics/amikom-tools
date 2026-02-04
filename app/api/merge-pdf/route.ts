@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     if (!files || files.length < 2) {
       return NextResponse.json(
         { error: "Minimal 2 file PDF dibutuhkan" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       if (file.type !== "application/pdf") {
         return NextResponse.json(
           { error: "Semua file harus PDF" },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const pdfDoc = await PDFDocument.load(buffer);
-      
+
       // Copy all pages dari PDF ini ke merged document
       const pageIndices = pdfDoc.getPageIndices();
       const copiedPages = await mergedPdf.copyPages(pdfDoc, pageIndices);
-      
+
       copiedPages.forEach((page) => {
         mergedPdf.addPage(page);
       });
@@ -52,9 +52,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Merge error:", error);
-    return NextResponse.json(
-      { error: "Gagal merge PDF" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Gagal merge PDF" }, { status: 500 });
   }
 }

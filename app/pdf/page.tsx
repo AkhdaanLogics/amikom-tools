@@ -24,7 +24,9 @@ export default function PDFMergerPage() {
       <main className="min-h-screen bg-slate-950 text-white pt-28 px-6">
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">Silakan Login</h1>
-          <p className="text-purple-200 mb-6">Kamu harus login untuk menggunakan PDF Merger</p>
+          <p className="text-purple-200 mb-6">
+            Kamu harus login untuk menggunakan PDF Merger
+          </p>
           <button
             onClick={() => router.push("/login")}
             className="inline-flex items-center gap-2 rounded-lg bg-white text-slate-900 px-6 py-3 font-semibold hover:bg-purple-50"
@@ -131,8 +133,12 @@ export default function PDFMergerPage() {
           className="border-2 border-dashed border-purple-400/50 rounded-lg p-12 text-center cursor-pointer hover:border-purple-400 transition mb-8 bg-white/5"
         >
           <Upload size={32} className="mx-auto mb-3 text-purple-300" />
-          <p className="text-lg font-semibold mb-2">Click atau Drag PDF di sini</p>
-          <p className="text-sm text-purple-200">Pilih 2 atau lebih file PDF untuk di-merge</p>
+          <p className="text-lg font-semibold mb-2">
+            Click atau Drag PDF di sini
+          </p>
+          <p className="text-sm text-purple-200">
+            Pilih 2 atau lebih file PDF untuk di-merge
+          </p>
           <input
             ref={fileInputRef}
             type="file"
@@ -170,7 +176,10 @@ export default function PDFMergerPage() {
                   draggedId === pdf.id ? "opacity-50" : ""
                 }`}
               >
-                <GripVertical size={20} className="text-purple-300 flex-shrink-0" />
+                <GripVertical
+                  size={20}
+                  className="text-purple-300 flex-shrink-0"
+                />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold bg-purple-500/30 px-2 py-1 rounded">
