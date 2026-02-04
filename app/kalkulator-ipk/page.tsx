@@ -45,11 +45,12 @@ export default function KalkulatorIPKPage() {
     type: "info" | "success" | "error";
   } | null>(null);
 
-  const gradePoints = gradingSystem === "amikom" ? gradePointsAmikom : gradePointsStandard;
+  const gradePoints =
+    gradingSystem === "amikom" ? gradePointsAmikom : gradePointsStandard;
 
   const showToast = (
     message: string,
-    type: "info" | "success" | "error" = "info"
+    type: "info" | "success" | "error" = "info",
   ) => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
@@ -68,9 +69,13 @@ export default function KalkulatorIPKPage() {
     setCourses(courses.filter((c) => c.id !== id));
   };
 
-  const updateCourse = (id: number, field: keyof Course, value: string | number) => {
+  const updateCourse = (
+    id: number,
+    field: keyof Course,
+    value: string | number,
+  ) => {
     setCourses(
-      courses.map((c) => (c.id === id ? { ...c, [field]: value } : c))
+      courses.map((c) => (c.id === id ? { ...c, [field]: value } : c)),
     );
   };
 
@@ -80,10 +85,10 @@ export default function KalkulatorIPKPage() {
 
     const totalPoints = courses.reduce(
       (sum, c) => sum + c.credits * gradePoints[c.grade],
-      0
+      0,
     );
 
-    return (totalPoints / totalCredits).toFixed(2);
+    return parseFloat((totalPoints / totalCredits).toFixed(2));
   };
 
   const getTotalCredits = () => {
@@ -103,7 +108,7 @@ export default function KalkulatorIPKPage() {
     showToast("Data berhasil direset", "success");
   };
 
-  const gpa = calculateGPA();
+  const gpa = calculateGPA().toFixed(2);
   const totalCredits = getTotalCredits();
   const gradeDistribution = getGradeDistribution();
 
@@ -225,7 +230,7 @@ export default function KalkulatorIPKPage() {
                         updateCourse(
                           course.id,
                           "credits",
-                          parseInt(e.target.value) || 1
+                          parseInt(e.target.value) || 1,
                         )
                       }
                       className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-center text-white focus:border-purple-400 focus:outline-none"
@@ -238,7 +243,11 @@ export default function KalkulatorIPKPage() {
                       className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-purple-400 focus:outline-none"
                     >
                       {Object.keys(gradePoints).map((grade) => (
-                        <option key={grade} value={grade} className="bg-slate-900">
+                        <option
+                          key={grade}
+                          value={grade}
+                          className="bg-slate-900"
+                        >
                           {grade}
                         </option>
                       ))}
@@ -269,8 +278,8 @@ export default function KalkulatorIPKPage() {
                 <div className="grid grid-cols-2 gap-2 text-xs text-purple-100/70 md:grid-cols-5">
                   {Object.entries(gradePoints).map(([grade, point]) => (
                     <div key={grade}>
-                      <span className="font-semibold text-white">{grade}</span> ={" "}
-                      {point.toFixed(1)}
+                      <span className="font-semibold text-white">{grade}</span>{" "}
+                      = {point.toFixed(1)}
                     </div>
                   ))}
                 </div>
@@ -286,27 +295,25 @@ export default function KalkulatorIPKPage() {
                   <span>IPK Anda</span>
                 </div>
                 <div className="text-5xl font-bold text-white">{gpa}</div>
-                <div className="mt-2 text-sm text-purple-100/70">
-                  dari 4.00
-                </div>
+                <div className="mt-2 text-sm text-purple-100/70">dari 4.00</div>
                 <div
                   className={`mt-4 inline-block rounded-full px-3 py-1 text-xs font-semibold ${
                     parseFloat(gpa) >= 3.5
                       ? "bg-green-500/20 text-green-300"
                       : parseFloat(gpa) >= 3.0
-                      ? "bg-blue-500/20 text-blue-300"
-                      : parseFloat(gpa) >= 2.5
-                      ? "bg-yellow-500/20 text-yellow-300"
-                      : "bg-red-500/20 text-red-300"
+                        ? "bg-blue-500/20 text-blue-300"
+                        : parseFloat(gpa) >= 2.5
+                          ? "bg-yellow-500/20 text-yellow-300"
+                          : "bg-red-500/20 text-red-300"
                   }`}
                 >
                   {parseFloat(gpa) >= 3.5
                     ? "Cumlaude"
                     : parseFloat(gpa) >= 3.0
-                    ? "Sangat Memuaskan"
-                    : parseFloat(gpa) >= 2.5
-                    ? "Memuaskan"
-                    : "Perlu Peningkatan"}
+                      ? "Sangat Memuaskan"
+                      : parseFloat(gpa) >= 2.5
+                        ? "Memuaskan"
+                        : "Perlu Peningkatan"}
                 </div>
               </div>
 
@@ -334,8 +341,12 @@ export default function KalkulatorIPKPage() {
                         key={grade}
                         className="flex items-center justify-between text-sm"
                       >
-                        <span className="font-semibold text-white">{grade}</span>
-                        <span className="text-purple-100/70">{count} matkul</span>
+                        <span className="font-semibold text-white">
+                          {grade}
+                        </span>
+                        <span className="text-purple-100/70">
+                          {count} matkul
+                        </span>
                       </div>
                     ))}
                 </div>
