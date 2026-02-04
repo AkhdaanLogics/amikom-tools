@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { Upload, Download, Trash2, GripVertical, Plus } from "lucide-react";
+import Toast from "@/components/toast";
 
 interface PDFFile {
   id: string;
@@ -18,6 +19,18 @@ export default function PDFMergerPage() {
   const [merging, setMerging] = useState(false);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "info" | "success" | "error";
+  } | null>(null);
+
+  const showToast = (
+    message: string,
+    type: "info" | "success" | "error" = "info",
+  ) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
 
   if (!user) {
     return (
@@ -76,10 +89,9 @@ export default function PDFMergerPage() {
     setPdfs(newPdfs);
     setDraggedId(null);
   };
-
   const handleMerge = async () => {
     if (pdfs.length < 2) {
-      alert("Pilih minimal 2 file PDF");
+      showToast("Pilih minimal 2 file PDF", "error");
       return;
     }
 
@@ -101,7 +113,6 @@ export default function PDFMergerPage() {
         throw new Error("Gagal merge PDF");
       }
 
-      // Download file
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -110,8 +121,7 @@ export default function PDFMergerPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error:", error);
-      alert("Gagal merge PDF. Coba lagi!");
+      showToast("Gagal merge PDF. Coba lagi!", "error");
     } finally {
       setMerging(false);
     }
@@ -210,10 +220,19 @@ export default function PDFMergerPage() {
             className="w-full flex items-center justify-center gap-2 bg-white text-slate-900 py-3 rounded-lg font-semibold hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
             <Download size={18} />
-            {merging ? "Sedang Merge..." : "Merge & Download"}
+            {merging ? "Sedang Merge..." : "Merge PDF"}
           </button>
         )}
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </main>
   );
 }

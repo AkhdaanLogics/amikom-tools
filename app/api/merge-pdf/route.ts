@@ -40,10 +40,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Save merged PDF
     const mergedBuffer = await mergedPdf.save();
-
-    return new NextResponse(mergedBuffer, {
+    return new NextResponse(Buffer.from(mergedBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
@@ -51,7 +49,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Merge error:", error);
     return NextResponse.json({ error: "Gagal merge PDF" }, { status: 500 });
   }
 }

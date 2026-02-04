@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   ClipboardList,
@@ -6,6 +7,7 @@ import {
   Merge,
   Quote,
 } from "lucide-react";
+import AddToHomeButton from "@/components/add-to-home-button";
 
 export default function HomePage() {
   return (
@@ -32,13 +34,7 @@ export default function HomePage() {
                 platform yang cepat dan simpel.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/pdf"
-                  className="inline-flex items-center gap-2 rounded-xl bg-white text-slate-900 px-5 py-3 text-sm font-semibold shadow-lg shadow-purple-500/20 hover:bg-purple-50"
-                >
-                  Merge PDF
-                  <ArrowRight size={16} />
-                </Link>
+                <AddToHomeButton />
                 <a
                   href="#fitur"
                   className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white/90 hover:bg-white/10"
@@ -76,6 +72,42 @@ export default function HomePage() {
           </div>
         </section>
       </div>
+
+      <section className="relative max-w-6xl mx-auto px-6 py-16">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 md:p-12 backdrop-blur">
+          <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-6 items-center">
+            <div className="mx-auto md:mx-0">
+              <div className="h-36 w-36 rounded-full border border-white/20 bg-white/10 overflow-hidden">
+                <Image
+                  src="/akhdaan.jpg"
+                  alt="Akhdaan"
+                  width={144}
+                  height={144}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-4 text-center md:text-left">
+              <span className="inline-flex items-center justify-center md:justify-start gap-2 rounded-full bg-white/10 px-4 py-1 text-xs text-purple-100 w-fit mx-auto md:mx-0">
+                Catatan Pembuat
+              </span>
+              <p className="text-sm text-purple-200/90">
+                Akhdaan • Developer & Owner
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Semoga AMIKOM Tools jadi teman produktif kamu
+              </h2>
+              <p className="text-purple-200 text-sm md:text-base max-w-3xl">
+                Saya berharap platform ini bisa membantu rekan mahasiswa
+                menghemat waktu, menyederhanakan tugas akademik, dan membuat
+                proses belajar terasa lebih ringan. Semua fitur dibuat supaya
+                kamu bisa fokus pada hal yang penting: belajar, berkarya, dan
+                berkembang.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="relative max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
