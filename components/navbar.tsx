@@ -34,11 +34,11 @@ export default function Navbar() {
             {user ? (
               <>
                 <Link
-                  href="/dashboard"
+                  href="/pdf"
                   className="flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20"
                 >
                   <BarChart3 size={16} />
-                  Dashboard
+                  PDF Tools
                 </Link>
                 <button
                   onClick={handleSignOut}

@@ -3,7 +3,7 @@ import {
   ArrowRight,
   ClipboardList,
   FileText,
-  Link2,
+  Merge,
   Quote,
 } from "lucide-react";
 
@@ -28,15 +28,15 @@ export default function HomePage() {
                 </span>
               </h1>
               <p className="mt-4 text-lg text-purple-100">
-                Template laporan, ujian online, dan pemendek URL dalam satu
+                Template laporan, ujian online, dan merge PDF dalam satu
                 platform yang cepat dan simpel.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href="/shorten"
+                  href="/pdf"
                   className="inline-flex items-center gap-2 rounded-xl bg-white text-slate-900 px-5 py-3 text-sm font-semibold shadow-lg shadow-purple-500/20 hover:bg-purple-50"
                 >
-                  Mulai Shorten
+                  Merge PDF
                   <ArrowRight size={16} />
                 </Link>
                 <a
@@ -67,9 +67,9 @@ export default function HomePage() {
                 Sistem ujian berbasis web dengan timer dan nilai otomatis.
               </Card>
 
-              <Link href="/shorten" className="group">
-                <Card icon={<Link2 size={28} />} title="URL Shortener">
-                  Pendekkan link, pantau klik, dan kelola masa aktif.
+              <Link href="/pdf" className="group">
+                <Card icon={<Merge size={28} />} title="PDF Merger">
+                  Gabung multiple PDF, atur urutan, dan download dengan mudah.
                 </Card>
               </Link>
             </div>
@@ -89,12 +89,12 @@ export default function HomePage() {
           <TestimonialCard
             name="Andi Pratama"
             role="Mahasiswa TI"
-            content="Gampang banget buat shorten link buat presentasi. Ga perlu ribet lagi!"
+            content="Merge PDF jadi lebih mudah! Bisa gabung puluhan file dalam hitungan detik tanpa install aplikasi."
           />
           <TestimonialCard
             name="Siti Nurhaliza"
             role="Mahasiswa SI"
-            content="Fitur klik tracking-nya membantu banget buat tau seberapa banyak yang akses link tugas kelompok."
+            content="Interface-nya simple banget, cocok buat yang ga teknis. Langsung bisa bikin laporan gabungan."
           />
           <TestimonialCard
             name="Budi Santoso"
