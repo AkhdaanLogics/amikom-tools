@@ -4,24 +4,20 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, LogIn, Mail, CheckCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Toast from "@/components/toast";
 import { isStudentEmail } from "@/lib/student-validator";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [toast, setToast] = useState<{
     message: string;
     type: "info" | "success" | "error";
   } | null>(null);
-  const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithGoogle, signOut } = useAuth();
   const router = useRouter();
 
   const showToast = (
@@ -51,59 +47,18 @@ export default function LoginPage() {
     }
   };
 
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    try {
-      if (isSignUp) {
-        // Validasi email student saat sign up
-        if (!isStudentEmail(email)) {
-          showToast(
-            "Gunakan email mahasiswa AMIKOM dengan format @students.amikom.ac.id untuk mendaftar.",
-            "error",
-          );
-          setLoading(false);
-          return;
-        }
-        await signUpWithEmail(email, password);
-        setSuccess("Akun berhasil dibuat! Silakan login.");
-        setIsSignUp(false);
-        setEmail("");
-        setPassword("");
-        setTimeout(() => setSuccess(""), 3000);
-      } else {
-        await signInWithEmail(email, password);
-        await redirectAfterLogin();
-      }
-    } catch (err: any) {
-      const message = err.message || "Terjadi kesalahan";
-      if (message.includes("Invalid login credentials")) {
-        setError("Email atau password salah");
-      } else if (message.includes("Email not confirmed")) {
-        setError("Email belum diverifikasi. Cek inbox Anda.");
-      } else if (message.includes("already in use")) {
-        setError("Email sudah terdaftar");
-      } else if (message.includes("invalid-email")) {
-        setError("Format email tidak valid");
-      } else if (message.includes("weak-password")) {
-        setError("Password minimal 6 karakter");
-      } else {
-        setError(message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGoogleSignIn = async () => {
     setError("");
     setLoading(true);
 
     try {
       await signInWithGoogle();
+      const currentUser = auth.currentUser;
+      if (!currentUser || !isStudentEmail(currentUser.email)) {
+        showToast("Login hanya untuk email @students.amikom.ac.id", "error");
+        await signOut();
+        return;
+      }
       await redirectAfterLogin();
     } catch (err: any) {
       const message = err.message || "Terjadi kesalahan saat login Google";
@@ -130,13 +85,9 @@ export default function LoginPage() {
             </Link>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
-              <h1 className="text-3xl font-bold mb-2">
-                {isSignUp ? "Buat Akun" : "Masuk"}
-              </h1>
+              <h1 className="text-3xl font-bold mb-2">Masuk</h1>
               <p className="text-purple-100 mb-6">
-                {isSignUp
-                  ? "Daftar untuk mulai membuat link"
-                  : "Login untuk akses dashboard"}
+                Login hanya untuk mahasiswa dengan email @students.amikom.ac.id
               </p>
 
               {error && (
@@ -145,65 +96,11 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {success && (
-                <div className="mb-4 rounded-lg bg-green-500/10 border border-green-500/20 p-3 text-sm text-green-200 flex items-center gap-2">
-                  <CheckCircle size={16} />
-                  {success}
-                </div>
-              )}
-
-              <form onSubmit={handleEmailAuth} className="space-y-4">
-                <div>
-                  <label className="text-sm text-purple-100">Email</label>
-                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-white/10 bg-slate-900/60 px-3 py-2">
-                    <Mail size={18} className="text-purple-200" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-transparent text-sm text-white placeholder:text-purple-200/60 focus:outline-none"
-                      placeholder="nama@email.com"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm text-purple-100">Password</label>
-                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-white/10 bg-slate-900/60 px-3 py-2">
-                    <LogIn size={18} className="text-purple-200" />
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-transparent text-sm text-white placeholder:text-purple-200/60 focus:outline-none"
-                      placeholder="••••••••"
-                      required
-                      minLength={6}
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-purple-500/20 hover:bg-purple-50 disabled:opacity-50"
-                >
-                  {loading ? "Loading..." : isSignUp ? "Daftar" : "Masuk"}
-                </button>
-              </form>
-
-              <div className="mt-6 flex items-center gap-4">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-xs text-purple-200">atau</span>
-                <div className="h-px flex-1 bg-white/10" />
-              </div>
-
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -225,16 +122,6 @@ export default function LoginPage() {
                 </svg>
                 Masuk dengan Google
               </button>
-
-              <p className="mt-6 text-center text-sm text-purple-200">
-                {isSignUp ? "Sudah punya akun?" : "Belum punya akun?"}{" "}
-                <button
-                  onClick={() => setIsSignUp(!isSignUp)}
-                  className="font-semibold text-white hover:underline"
-                >
-                  {isSignUp ? "Masuk" : "Daftar"}
-                </button>
-              </p>
             </div>
           </div>
         </div>
