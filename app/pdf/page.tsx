@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
 import { Upload, Download, Trash2, GripVertical, Plus } from "lucide-react";
 import Toast from "@/components/toast";
 
@@ -13,8 +11,6 @@ interface PDFFile {
 }
 
 export default function PDFMergerPage() {
-  const { user } = useAuth();
-  const router = useRouter();
   const [pdfs, setPdfs] = useState<PDFFile[]>([]);
   const [merging, setMerging] = useState(false);
   const [draggedId, setDraggedId] = useState<string | null>(null);
@@ -31,25 +27,6 @@ export default function PDFMergerPage() {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   };
-
-  if (!user) {
-    return (
-      <main className="min-h-screen bg-slate-950 text-white pt-28 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-3xl font-bold mb-4">Silakan Login</h1>
-          <p className="text-purple-200 mb-6">
-            Kamu harus login untuk menggunakan PDF Merger
-          </p>
-          <button
-            onClick={() => router.push("/login")}
-            className="inline-flex items-center gap-2 rounded-lg bg-white text-slate-900 px-6 py-3 font-semibold hover:bg-purple-50"
-          >
-            Ke Login
-          </button>
-        </div>
-      </main>
-    );
-  }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
