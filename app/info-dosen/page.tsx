@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { GraduationCap, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 type Faculty = {
   name: string;
@@ -104,6 +106,36 @@ const faculties: Faculty[] = [
 ];
 
 export default function InfoDosenPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          </div>
+          <p className="mt-4 text-purple-200">Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  return <InfoDosenContent />;
+}
+
+function InfoDosenContent() {
   const [selectedFaculty, setSelectedFaculty] = useState<Faculty | null>(null);
 
   return (

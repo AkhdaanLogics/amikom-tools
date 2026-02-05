@@ -1,13 +1,42 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { FileText, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 const wordTemplateLink = "/Template Laporan.docx";
 const docsTemplateLink =
   "https://docs.google.com/document/d/1LPp13PAob7YRY3b4vV8lObeOfg1WoLuNC5Z6u489yb0/edit?usp=sharing";
 
 export default function TemplatesPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          </div>
+          <p className="mt-4 text-purple-200">Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-white pt-20">
       <div className="relative overflow-hidden">

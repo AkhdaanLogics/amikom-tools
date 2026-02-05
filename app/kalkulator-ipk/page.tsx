@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Calculator, Plus, Trash2, BarChart3, ArrowLeft } from "lucide-react";
 import Toast from "@/components/toast";
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 type Course = {
   id: number;
@@ -36,6 +38,36 @@ const gradePointsAmikom: { [key: string]: number } = {
 };
 
 export default function KalkulatorIPKPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          </div>
+          <p className="mt-4 text-purple-200">Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  return <KalkulatorIPKContent />;
+}
+
+function KalkulatorIPKContent() {
   const [gradingSystem, setGradingSystem] = useState<GradingSystem>("amikom");
   const [courses, setCourses] = useState<Course[]>([
     { id: 1, name: "", credits: 3, grade: "A" },
