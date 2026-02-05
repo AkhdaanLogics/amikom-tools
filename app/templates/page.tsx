@@ -3,8 +3,9 @@
 import { FileText, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-const wordTemplateLink = "";
-const docsTemplateLink = "";
+const wordTemplateLink = "/Template Laporan.docx";
+const docsTemplateLink =
+  "https://docs.google.com/document/d/1LPp13PAob7YRY3b4vV8lObeOfg1WoLuNC5Z6u489yb0/edit?usp=sharing";
 
 export default function TemplatesPage() {
   return (
