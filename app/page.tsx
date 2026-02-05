@@ -15,6 +15,7 @@ import {
   QrCode,
   Search,
   Pen,
+  Zap,
 } from "lucide-react";
 import AddToHomeButton from "@/components/add-to-home-button";
 import { useAuth } from "@/lib/auth-context";
@@ -169,11 +170,14 @@ export default function HomePage() {
               </Link>
 
               <Link href="/pdf-editor" className="group">
-                <Card
-                  icon={<Pen size={28} />}
-                  title="PDF Editor"
-                >
+                <Card icon={<Pen size={28} />} title="PDF Editor">
                   Edit PDF: tambah tanda tangan, gambar, atur ulang halaman.
+                </Card>
+              </Link>
+
+              <Link href="/pdf-compressor" className="group">
+                <Card icon={<Zap size={28} />} title="PDF Compressor">
+                  Kompresi PDF tanpa mengurangi kualitas terlalu banyak.
                 </Card>
               </Link>
 

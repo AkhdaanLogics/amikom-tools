@@ -549,7 +549,9 @@ function PDFEditorContent() {
       }
 
       const pdfBytes = await newPdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const blob = new Blob([new Uint8Array(pdfBytes)], {
+        type: "application/pdf",
+      });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = `edited-${pdfFile.name}`;
@@ -605,7 +607,7 @@ function PDFEditorContent() {
       )}
 
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.35),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(124,58,237,0.35),transparent_55%)]" />
         <div className="absolute -top-32 right-0 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" />
         <div className="absolute top-40 -left-20 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
 
@@ -710,7 +712,7 @@ function PDFEditorContent() {
                       >
                         <GripVertical
                           size={18}
-                          className="text-purple-200 flex-shrink-0"
+                          className="text-purple-200 shrink-0"
                         />
                         <div className="flex-1 text-sm">
                           <p className="font-semibold">
@@ -722,7 +724,7 @@ function PDFEditorContent() {
                             e.stopPropagation();
                             deletePage(page.pageNum);
                           }}
-                          className="text-red-400 hover:text-red-300 flex-shrink-0"
+                          className="text-red-400 hover:text-red-300 shrink-0"
                         >
                           <Trash2 size={16} />
                         </button>
