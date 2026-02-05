@@ -137,7 +137,7 @@ function ScheduleReminderContent() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
 
-    await page.render({ canvasContext: ctx, viewport }).promise;
+    await page.render({ canvas, canvasContext: ctx, viewport }).promise;
     return canvas.toDataURL("image/png");
   };
 
