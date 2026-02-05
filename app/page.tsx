@@ -13,6 +13,8 @@ import {
   BookOpen,
   Calculator,
   QrCode,
+  Search,
+  Pen,
 } from "lucide-react";
 import AddToHomeButton from "@/components/add-to-home-button";
 import { useAuth } from "@/lib/auth-context";
@@ -152,6 +154,29 @@ export default function HomePage() {
                 </Card>
               )}
 
+              <Link href="/plagiarism-checker" className="group">
+                <Card icon={<Search size={28} />} title="Plagiarism Checker">
+                  Cek kesamaan teks dengan analisis semantic similarity yang
+                  akurat.
+                </Card>
+              </Link>
+
+              <Link href="/document-summarizer" className="group">
+                <Card icon={<BookOpen size={28} />} title="Document Summarizer">
+                  Buat ringkasan otomatis dari artikel, paper, atau teks
+                  panjang.
+                </Card>
+              </Link>
+
+              <Link href="/pdf-editor" className="group">
+                <Card
+                  icon={<Pen size={28} />}
+                  title="PDF Editor"
+                >
+                  Edit PDF: tambah tanda tangan, gambar, atur ulang halaman.
+                </Card>
+              </Link>
+
               <Link href="/pdf" className="group">
                 <Card icon={<Merge size={28} />} title="PDF Merger">
                   Gabung multiple PDF, atur urutan, dan download dengan mudah.
@@ -284,7 +309,7 @@ export default function HomePage() {
       {/* Contact Section */}
       <section className="mb-20 max-w-3xl mx-auto px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-          Hubungi Kami
+          Hubungi Saya
         </h2>
         <p className="text-purple-200/80 mb-8">
           Ada saran, pertanyaan, atau mau lapor bug? Kontak aja!
