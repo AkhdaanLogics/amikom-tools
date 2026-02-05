@@ -2,9 +2,17 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, Download, Trash2, GripVertical, Plus } from "lucide-react";
+import {
+  Upload,
+  Download,
+  Trash2,
+  GripVertical,
+  Plus,
+  ArrowLeft,
+} from "lucide-react";
 import Toast from "@/components/toast";
 import { useAuth } from "@/lib/auth-context";
+import Link from "next/link";
 
 interface PDFFile {
   id: string;
@@ -139,6 +147,14 @@ function PDFMergerContent() {
   return (
     <main className="min-h-screen bg-slate-950 text-white pt-28 pb-20">
       <div className="max-w-4xl mx-auto px-6">
+        <Link
+          href="/"
+          className="mb-8 inline-flex items-center gap-2 rounded-xl border border-white/20 px-4 py-2 text-sm font-semibold text-white/90 transition-all hover:bg-white/10"
+        >
+          <ArrowLeft size={16} />
+          Kembali ke Beranda
+        </Link>
+
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-2">PDF Merger</h1>
           <p className="text-purple-200">

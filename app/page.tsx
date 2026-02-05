@@ -7,15 +7,11 @@ import {
   ArrowRight,
   ClipboardList,
   FileText,
-  Merge,
   Quote,
   GraduationCap,
   BookOpen,
-  Calculator,
-  QrCode,
   Search,
-  Pen,
-  Zap,
+  Plus,
 } from "lucide-react";
 import AddToHomeButton from "@/components/add-to-home-button";
 import { useAuth } from "@/lib/auth-context";
@@ -169,33 +165,9 @@ export default function HomePage() {
                 </Card>
               </Link>
 
-              <Link href="/pdf-editor" className="group">
-                <Card icon={<Pen size={28} />} title="PDF Editor">
-                  Edit PDF: tambah tanda tangan, gambar, atur ulang halaman.
-                </Card>
-              </Link>
-
-              <Link href="/pdf-compressor" className="group">
-                <Card icon={<Zap size={28} />} title="PDF Compressor">
-                  Kompresi PDF tanpa mengurangi kualitas terlalu banyak.
-                </Card>
-              </Link>
-
-              <Link href="/pdf" className="group">
-                <Card icon={<Merge size={28} />} title="PDF Merger">
-                  Gabung multiple PDF, atur urutan, dan download dengan mudah.
-                </Card>
-              </Link>
-
-              <Link href="/kalkulator-ipk" className="group">
-                <Card icon={<Calculator size={28} />} title="Kalkulator IPK">
-                  Hitung IPK dan prediksi nilai semester dengan mudah.
-                </Card>
-              </Link>
-
-              <Link href="/qr-generator" className="group">
-                <Card icon={<QrCode size={28} />} title="QR Code Generator">
-                  Generate QR code untuk link, teks, atau kontak dengan mudah.
+              <Link href="/tools" className="group">
+                <Card icon={<Plus size={28} />} title="Tools Lainnya">
+                  Lihat semua tools yang tersedia di AMIKOM Tools.
                 </Card>
               </Link>
             </div>
