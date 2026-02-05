@@ -308,13 +308,6 @@ function QRGeneratorContent() {
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    );
-  }
-}
-            </div>
-          </div>
 
           {/* Features Info */}
           <div className="mx-auto mt-12 max-w-4xl">
