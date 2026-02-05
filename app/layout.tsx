@@ -2,7 +2,7 @@ import "./globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import Navbar from "@/components/navbar";
-
+import { Analytics } from "@vercel/analytics/next";
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
