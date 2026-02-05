@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
+  CalendarDays,
   FileText,
   BookOpen,
   GraduationCap,
@@ -55,6 +56,13 @@ export default function ToolsPage() {
       icon: <BookOpen size={28} />,
       requiresStudent: true,
       badge: "Khusus Mahasiswa Amikom",
+    },
+    {
+      title: "Pengingat Jadwal",
+      description:
+        "Upload jadwal, OCR otomatis, lalu export ke kalender (ICS).",
+      href: "/schedule-reminder",
+      icon: <CalendarDays size={28} />,
     },
     {
       title: "Info Dosen",
@@ -151,14 +159,12 @@ export default function ToolsPage() {
             <ArrowLeft size={16} />
             Kembali ke Beranda
           </Link>
-
           <div className="mb-12 text-center">
             <h1 className="mb-4 text-4xl font-bold md:text-5xl">Semua Tools</h1>
             <p className="text-purple-200">
               Berikut daftar lengkap tools yang tersedia di AMIKOM Tools
             </p>
           </div>
-
           <div className="mx-auto mb-10 max-w-2xl">
             <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
               <Search size={18} className="text-purple-300" />
