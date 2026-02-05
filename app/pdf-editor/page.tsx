@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
 import {
   FileText,
   ArrowLeft,
@@ -11,7 +10,6 @@ import {
   Download,
   Pen,
 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
 import Toast from "@/components/toast";
 import Link from "next/link";
 import { PDFDocument } from "pdf-lib";
@@ -35,32 +33,6 @@ interface DrawingElement {
 }
 
 export default function PDFEditorPage() {
-  const router = useRouter();
-  const { user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [loading, user, router]);
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-          </div>
-          <p className="mt-4 text-purple-200">Loading...</p>
-        </div>
-      </main>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
-
   return <PDFEditorContent />;
 }
 

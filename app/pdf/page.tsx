@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef } from "react";
 import {
   Upload,
   Download,
@@ -11,7 +10,6 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import Toast from "@/components/toast";
-import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
 
 interface PDFFile {
@@ -21,32 +19,6 @@ interface PDFFile {
 }
 
 export default function PDFMergerPage() {
-  const router = useRouter();
-  const { user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [loading, user, router]);
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-          </div>
-          <p className="mt-4 text-purple-200">Loading...</p>
-        </div>
-      </main>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
-
   return <PDFMergerContent />;
 }
 
