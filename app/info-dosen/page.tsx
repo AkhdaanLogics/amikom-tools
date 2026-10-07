@@ -191,7 +191,7 @@ function InfoDosenContent() {
                 </p>
               </div>
 
-              <div className="mx-auto max-w-4xl">
+              <div className="mx-auto max-w-7xl">
                 <div className="grid gap-4 md:grid-cols-2">
                   {faculties.map((faculty) => (
                     <button
@@ -227,8 +227,8 @@ function InfoDosenContent() {
                 </p>
               </div>
 
-              <div className="mx-auto max-w-4xl">
-                <div className="grid gap-4 md:grid-cols-2">
+              <div className="mx-auto max-w-7xl">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {selectedFaculty.programs.map((program) => (
                     <div
                       key={program.shortName}

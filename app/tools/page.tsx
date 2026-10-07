@@ -15,6 +15,7 @@ import {
   Merge,
   Calculator,
   QrCode,
+  ListTodo,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { isStudentEmail } from "@/lib/student-validator";
@@ -63,6 +64,13 @@ export default function ToolsPage() {
         "Upload jadwal, OCR otomatis, lalu export ke kalender (ICS).",
       href: "/schedule-reminder",
       icon: <CalendarDays size={28} />,
+    },
+    {
+      title: "Planner Tugas",
+      description:
+        "Catat tugas kuliah, mata kuliah, dan tenggat dalam satu daftar.",
+      href: "/planner-tugas",
+      icon: <ListTodo size={28} />,
     },
     {
       title: "Info Dosen",
@@ -166,18 +174,18 @@ export default function ToolsPage() {
             </p>
           </div>
           <div className="mx-auto mb-10 max-w-2xl">
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-              <Search size={18} className="text-purple-300" />
+            <div className="flex items-center gap-3 rounded-2xl border border-orange-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-orange-400 focus-within:ring-4 focus-within:ring-orange-100">
+              <Search size={18} className="shrink-0 text-orange-600" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Cari tools..."
-                className="w-full bg-transparent text-sm text-white placeholder:text-purple-300 focus:outline-none"
+                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
               />
             </div>
             {normalizedQuery && (
-              <p className="mt-2 text-xs text-purple-200">
+              <p className="mt-2 text-xs text-slate-600">
                 Menampilkan {filteredTools.length} hasil untuk “{query}”
               </p>
             )}

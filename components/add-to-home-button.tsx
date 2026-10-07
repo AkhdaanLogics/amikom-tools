@@ -50,7 +50,7 @@ export default function AddToHomeButton() {
     <>
       <button
         onClick={handleClick}
-        className="inline-flex items-center gap-2 rounded-xl bg-white text-slate-900 px-5 py-3 text-sm font-semibold shadow-lg shadow-purple-500/20 hover:bg-purple-50"
+        className="inline-flex items-center gap-2 rounded-xl bg-orange-500 text-white px-5 py-3 text-sm font-semibold shadow-md shadow-orange-500/20 transition-colors hover:bg-orange-600"
       >
         <ArrowDownToLine size={16} />
         {available ? "Tambahkan ke Layar Utama" : "Pasang di Layar Utama"}
@@ -59,14 +59,14 @@ export default function AddToHomeButton() {
       {/* Toast Notification */}
       {showToast && (
         <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
-          <div className="bg-slate-900 border border-slate-700 text-white rounded-lg shadow-2xl p-4 pr-12 max-w-md">
+          <div className="border border-orange-100 bg-white text-slate-800 rounded-xl shadow-xl p-4 pr-12 max-w-md">
             <div className="flex items-start gap-3">
               <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
               <p className="text-sm leading-relaxed">{toastMessage}</p>
             </div>
             <button
               onClick={() => setShowToast(false)}
-              className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors"
+              className="absolute top-3 right-3 text-slate-400 hover:text-orange-700 transition-colors"
             >
               <X size={18} />
             </button>

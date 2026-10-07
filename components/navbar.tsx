@@ -43,12 +43,12 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-orange-100 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto max-w-7xl px-6 py-4">
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="text-xl font-bold text-white hover:text-purple-200"
+              className="text-xl font-bold text-slate-900 transition-colors hover:text-orange-700"
             >
               AMIKOM Tools
             </Link>
@@ -58,14 +58,14 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/profile"
-                    className="flex items-center gap-2 rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/10"
+                    className="flex items-center gap-2 rounded-lg border border-orange-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-orange-400 hover:bg-orange-50"
                   >
                     <UserCircle size={16} />
                     Profil
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-lg hover:bg-purple-50"
+                    className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-orange-600"
                   >
                     <LogOut size={16} />
                     Keluar
@@ -74,7 +74,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-lg hover:bg-purple-50"
+                  className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-orange-600"
                 >
                   <User size={16} />
                   Masuk
@@ -87,21 +87,21 @@ export default function Navbar() {
 
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-6">
-          <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-slate-950 p-6 text-white shadow-2xl">
+          <div className="w-full max-w-sm rounded-2xl border border-orange-100 bg-white p-6 text-slate-900 shadow-2xl">
             <h3 className="text-lg font-semibold">Yakin mau keluar?</h3>
-            <p className="mt-2 text-sm text-purple-200">
+            <p className="mt-2 text-sm text-slate-600">
               Kamu akan keluar dari akun ini. Bisa login lagi kapan saja.
             </p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/10"
+                className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
               >
                 Batal
               </button>
               <button
                 onClick={confirmLogout}
-                className="flex-1 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-purple-50"
+                className="flex-1 rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
               >
                 Keluar
               </button>

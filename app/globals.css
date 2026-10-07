@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffaf5;
+  --foreground: #1f2937;
+  --accent: #f97316;
+  --accent-dark: #c2410c;
 }
 
 @theme inline {
@@ -12,17 +14,123 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: inherit;
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+main.min-h-screen.bg-slate-950,
+div.min-h-screen.bg-slate-950 {
+  color: #1f2937 !important;
+  background-color: #fffaf5 !important;
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.045) 1px, transparent 1px) !important;
+  background-size: 28px 28px !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="text-white"],
+div.min-h-screen.bg-slate-950 [class*="text-white"] {
+  color: #1f2937 !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="text-purple-"],
+main.min-h-screen.bg-slate-950 [class*="text-indigo-"],
+div.min-h-screen.bg-slate-950 [class*="text-purple-"],
+div.min-h-screen.bg-slate-950 [class*="text-indigo-"] {
+  color: #596579 !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="text-purple-400"],
+main.min-h-screen.bg-slate-950 [class*="text-purple-500"],
+main.min-h-screen.bg-slate-950 [class*="text-indigo-400"],
+div.min-h-screen.bg-slate-950 [class*="text-purple-400"],
+div.min-h-screen.bg-slate-950 [class*="text-purple-500"],
+div.min-h-screen.bg-slate-950 [class*="text-indigo-400"] {
+  color: var(--accent-dark) !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="bg-white/"],
+div.min-h-screen.bg-slate-950 [class*="bg-white/"] {
+  background-color: #ffffff !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="bg-slate-"],
+div.min-h-screen.bg-slate-950 [class*="bg-slate-"] {
+  background-color: #ffffff !important;
+}
+
+main.min-h-screen.bg-slate-950 [class~="bg-purple-600"],
+div.min-h-screen.bg-slate-950 [class~="bg-purple-600"] {
+  background-color: #f97316 !important;
+  color: #ffffff !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="bg-purple-"][class*="/"],
+div.min-h-screen.bg-slate-950 [class*="bg-purple-"][class*="/"] {
+  background-color: #ffedd5 !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="bg-indigo-"],
+div.min-h-screen.bg-slate-950 [class*="bg-indigo-"] {
+  background-color: #ffedd5 !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="border-white/"],
+main.min-h-screen.bg-slate-950 [class*="border-purple-"],
+div.min-h-screen.bg-slate-950 [class*="border-white/"],
+div.min-h-screen.bg-slate-950 [class*="border-purple-"] {
+  border-color: #e5e7eb !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="rounded-xl"][class*="border-white/20"],
+main.min-h-screen.bg-slate-950 [class*="rounded-lg"][class*="border-white/20"],
+div.min-h-screen.bg-slate-950 [class*="rounded-xl"][class*="border-white/20"],
+div.min-h-screen.bg-slate-950 [class*="rounded-lg"][class*="border-white/20"] {
+  background-color: #ffffff !important;
+  border-color: #fed7aa !important;
+  color: #9a3412 !important;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+main.min-h-screen.bg-slate-950 [class*="rounded-xl"][class*="border-white/20"]:hover,
+main.min-h-screen.bg-slate-950 [class*="rounded-lg"][class*="border-white/20"]:hover,
+div.min-h-screen.bg-slate-950 [class*="rounded-xl"][class*="border-white/20"]:hover,
+div.min-h-screen.bg-slate-950 [class*="rounded-lg"][class*="border-white/20"]:hover {
+  background-color: #fff7ed !important;
+  border-color: #fb923c !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="radial-gradient"],
+div.min-h-screen.bg-slate-950 [class*="radial-gradient"],
+main.min-h-screen.bg-slate-950 .blur-3xl,
+div.min-h-screen.bg-slate-950 .blur-3xl {
+  display: none !important;
+}
+
+main.min-h-screen.bg-slate-950 [class*="from-purple-300"][class*="to-pink-300"],
+div.min-h-screen.bg-slate-950 [class*="from-purple-300"][class*="to-pink-300"] {
+  background-image: linear-gradient(90deg, #c2410c, #f97316) !important;
+}
+
+main.min-h-screen.bg-slate-950 :is(button, a, input, textarea, select):focus-visible,
+div.min-h-screen.bg-slate-950 :is(button, a, input, textarea, select):focus-visible {
+  outline: 3px solid rgba(249, 115, 22, 0.35);
+  outline-offset: 2px;
+}
+
+main.min-h-screen.bg-slate-950 [class*="accent-purple-"],
+div.min-h-screen.bg-slate-950 [class*="accent-purple-"] {
+  accent-color: var(--accent);
 }
 
 /* Remove autofill background */
@@ -31,7 +139,7 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-background-clip: text;
-  -webkit-text-fill-color: #ffffff;
+  -webkit-text-fill-color: #1f2937;
   transition: background-color 5000s ease-in-out 0s;
   box-shadow: inset 0 0 20px 20px transparent;
 }

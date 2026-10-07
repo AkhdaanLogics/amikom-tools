@@ -1,26 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
+  BookOpen,
+  CalendarDays,
   ClipboardList,
   FileText,
-  Quote,
+  Github,
   GraduationCap,
-  BookOpen,
-  Search,
+  Instagram,
+  Mail,
   Plus,
+  Pen,
+  Zap,
+  Image as ImageIcon,
+  Merge,
+  Calculator,
+  QrCode,
+  ListTodo,
+  Search,
 } from "lucide-react";
 import AddToHomeButton from "@/components/add-to-home-button";
 import { useAuth } from "@/lib/auth-context";
 import { isStudentEmail } from "@/lib/student-validator";
 import Toast from "@/components/toast";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function HomePage() {
+  const pageRef = useRef<HTMLElement>(null);
   const { user } = useAuth();
   const isStudent = user && isStudentEmail(user.email);
+  const [toolQuery, setToolQuery] = useState("");
   const [toast, setToast] = useState<{
     message: string;
     type: "info" | "success" | "error";
@@ -39,311 +54,465 @@ export default function HomePage() {
     const params = new URLSearchParams(window.location.search);
     const welcome = params.get("welcome");
     if (welcome) {
-      showToast(
-        welcome === "back" ? "Selamat datang kembali!" : "Login berhasil!",
-        "success",
-      );
+      const toastTimeout = window.setTimeout(() => {
+        showToast(
+          welcome === "back" ? "Selamat datang kembali!" : "Login berhasil!",
+          "success",
+        );
+      }, 0);
       params.delete("welcome");
       const newUrl = params.toString() ? `/?${params.toString()}` : "/";
       window.history.replaceState(null, "", newUrl);
+      return () => window.clearTimeout(toastTimeout);
     }
   }, []);
 
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const context = gsap.context(() => {
+      const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+      intro
+        .from("[data-gsap='hero-copy'] > *", {
+          y: 24,
+          opacity: 0,
+          duration: 0.65,
+          stagger: 0.1,
+        })
+        .from(
+          "[data-gsap='hero-card']",
+          { y: 28, opacity: 0, scale: 0.98, duration: 0.75 },
+          "-=0.45",
+        );
+
+      gsap.utils
+        .toArray<HTMLElement>("[data-gsap='reveal']")
+        .forEach((element) => {
+          gsap.from(element, {
+            y: 22,
+            opacity: 0,
+            duration: 0.65,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: element,
+              start: "top 85%",
+              once: true,
+            },
+          });
+        });
+    }, pageRef);
+
+    return () => context.revert();
+  }, []);
+
+  const tools = [
+    {
+      title: "Template Laporan",
+      description:
+        "Template laporan UTS, UAS, kelompok, individu, dan format akademik lainnya.",
+      href: "/templates",
+      icon: <FileText size={22} />,
+      requiresStudent: true,
+      featured: true,
+    },
+    {
+      title: "Bank Soal",
+      description: "Kumpulan soal ujian dan latihan dari berbagai mata kuliah.",
+      href: "/bank-soal",
+      icon: <BookOpen size={22} />,
+      requiresStudent: true,
+      featured: true,
+    },
+    {
+      title: "Info Dosen",
+      description: "Informasi dosen per program studi dari website fakultas.",
+      href: "/info-dosen",
+      icon: <GraduationCap size={22} />,
+      requiresStudent: true,
+      featured: true,
+    },
+    {
+      title: "Pengingat Jadwal",
+      description: "Ubah jadwal kuliah menjadi pengingat kalender.",
+      href: "/schedule-reminder",
+      icon: <CalendarDays size={22} />,
+      featured: true,
+    },
+    {
+      title: "Planner Tugas",
+      description:
+        "Catat tugas kuliah dan pantau tenggat supaya tidak ada deadline terlewat.",
+      href: "/planner-tugas",
+      icon: <ListTodo size={22} />,
+      featured: true,
+    },
+    {
+      title: "Plagiarism Checker",
+      description: "Periksa kemiripan teks sebelum mengumpulkan tugas.",
+      href: "/plagiarism-checker",
+      icon: <Search size={22} />,
+      featured: true,
+    },
+    {
+      title: "Document Summarizer",
+      description: "Buat ringkasan dari artikel, paper, atau teks panjang.",
+      href: "/document-summarizer",
+      icon: <ClipboardList size={22} />,
+      featured: true,
+    },
+    {
+      title: "PDF Editor",
+      description: "Edit PDF, tambah tanda tangan atau gambar, dan atur halaman.",
+      href: "/pdf-editor",
+      icon: <Pen size={22} />,
+      featured: false,
+    },
+    {
+      title: "PDF Compressor",
+      description: "Kompresi PDF dengan tetap menjaga kualitas dokumen.",
+      href: "/pdf-compressor",
+      icon: <Zap size={22} />,
+      featured: false,
+    },
+    {
+      title: "Image to PDF",
+      description: "Konversi gambar JPG atau PNG menjadi dokumen PDF.",
+      href: "/image-to-pdf",
+      icon: <ImageIcon size={22} />,
+      featured: false,
+    },
+    {
+      title: "PDF Merger",
+      description: "Gabungkan beberapa PDF dan atur urutan halamannya.",
+      href: "/pdf",
+      icon: <Merge size={22} />,
+      featured: false,
+    },
+    {
+      title: "Kalkulator IPK",
+      description: "Hitung IPK dan prediksi nilai semester.",
+      href: "/kalkulator-ipk",
+      icon: <Calculator size={22} />,
+      featured: false,
+    },
+    {
+      title: "QR Code Generator",
+      description: "Buat QR code dari tautan, teks, atau informasi kontak.",
+      href: "/qr-generator",
+      icon: <QrCode size={22} />,
+      featured: false,
+    },
+  ];
+  const normalizedToolQuery = toolQuery.trim().toLowerCase();
+  const visibleTools = tools.filter((tool) => {
+    if (!normalizedToolQuery) return tool.featured;
+    return (
+      tool.title.toLowerCase().includes(normalizedToolQuery) ||
+      tool.description.toLowerCase().includes(normalizedToolQuery)
+    );
+  });
+
   return (
-    <main className="min-h-screen bg-slate-950 text-white pt-20">
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.35),_transparent_55%)]" />
-        <div className="absolute -top-32 right-0 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" />
-        <div className="absolute top-40 -left-20 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
-
-        <section className="relative max-w-6xl mx-auto px-6 py-20">
-          <div className="flex flex-col gap-10">
-            <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-purple-100">
-                Platform mahasiswa • gratis
-              </span>
-              <h1 className="mt-4 text-4xl md:text-6xl font-bold leading-tight">
-                AMIKOM Tools
-                <span className="block text-purple-200">
-                  semua kebutuhan akademik
-                </span>
-              </h1>
-              <p className="mt-4 text-lg text-purple-100">
-                Template laporan, bank soal, info dosen, dan berbagai tools
-                untuk mendukung produktivitas akademik kamu.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <AddToHomeButton />
-                <a
-                  href="#fitur"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white/90 hover:bg-white/10"
-                >
-                  Lihat fitur
-                </a>
-              </div>
-            </div>
-
-            <div id="fitur" className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {isStudent ? (
-                <Link href="/templates" className="group">
-                  <Card
-                    icon={<FileText size={28} />}
-                    title="Template Laporan"
-                    badge="Khusus Mahasiswa Amikom"
-                  >
-                    Template laporan UTS, UAS, kelompok, individu, dan berbagai
-                    format akademik lainnya.
-                  </Card>
-                </Link>
-              ) : (
-                <Card
-                  disabled
-                  icon={<FileText size={28} />}
-                  title="Template Laporan"
-                  badge="Khusus Mahasiswa Amikom"
-                >
-                  Template laporan UTS, UAS, kelompok, individu, dan berbagai
-                  format akademik lainnya.
-                </Card>
-              )}
-
-              {isStudent ? (
-                <Link href="/bank-soal" className="group">
-                  <Card
-                    icon={<BookOpen size={28} />}
-                    title="Bank Soal"
-                    badge="Khusus Mahasiswa Amikom"
-                  >
-                    Kumpulan soal ujian dan latihan dari berbagai mata kuliah.
-                  </Card>
-                </Link>
-              ) : (
-                <Card
-                  disabled
-                  icon={<BookOpen size={28} />}
-                  title="Bank Soal"
-                  badge="Khusus Mahasiswa Amikom"
-                >
-                  Kumpulan soal ujian dan latihan dari berbagai mata kuliah.
-                </Card>
-              )}
-
-              {isStudent ? (
-                <Link href="/info-dosen" className="group">
-                  <Card
-                    icon={<GraduationCap size={28} />}
-                    title="Info Dosen"
-                    badge="Khusus Mahasiswa Amikom"
-                  >
-                    Informasi dosen per prodi dengan redirect ke website resmi
-                    fakultas.
-                  </Card>
-                </Link>
-              ) : (
-                <Card
-                  disabled
-                  icon={<GraduationCap size={28} />}
-                  title="Info Dosen"
-                  badge="Khusus Mahasiswa Amikom"
-                >
-                  Informasi dosen per prodi dengan redirect ke website resmi
-                  fakultas.
-                </Card>
-              )}
-
-              <Link href="/plagiarism-checker" className="group">
-                <Card icon={<Search size={28} />} title="Plagiarism Checker">
-                  Cek kesamaan teks dengan analisis semantic similarity yang
-                  akurat.
-                </Card>
-              </Link>
-
-              <Link href="/document-summarizer" className="group">
-                <Card icon={<BookOpen size={28} />} title="Document Summarizer">
-                  Buat ringkasan otomatis dari artikel, paper, atau teks
-                  panjang.
-                </Card>
-              </Link>
-
-              <Link href="/tools" className="group">
-                <Card icon={<Plus size={28} />} title="Tools Lainnya">
-                  Lihat semua tools yang tersedia di AMIKOM Tools.
-                </Card>
-              </Link>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <section className="relative max-w-6xl mx-auto px-6 py-16">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 md:p-12 backdrop-blur">
-          <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-6 items-center">
-            <div className="mx-auto md:mx-0">
-              <div className="h-36 w-36 rounded-full border border-white/20 bg-white/10 overflow-hidden">
-                <Image
-                  src="/akhdaan.jpg"
-                  alt="Akhdaan"
-                  width={144}
-                  height={144}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-4 text-center md:text-left">
-              <span className="inline-flex items-center justify-center md:justify-start gap-2 rounded-full bg-white/10 px-4 py-1 text-xs text-purple-100 w-fit mx-auto md:mx-0">
-                Catatan Pembuat
-              </span>
-              <p className="text-sm text-purple-200/90">
-                Akhdaan • Developer & Owner
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold">
-                Semoga AMIKOM Tools jadi teman produktif kamu
-              </h2>
-              <p className="text-purple-200 text-sm md:text-base max-w-3xl">
-                Saya berharap platform ini bisa membantu rekan mahasiswa
-                menghemat waktu, menyederhanakan tugas akademik, dan membuat
-                proses belajar terasa lebih ringan. Semua fitur dibuat supaya
-                kamu bisa fokus pada hal yang penting: belajar, berkarya, dan
-                berkembang.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative max-w-6xl mx-auto px-6 py-16">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold">Apa Kata Mereka</h2>
-          <p className="mt-2 text-purple-200">
-            Pengalaman pengguna AMIKOM Tools
+    <main
+      ref={pageRef}
+      className="min-h-screen bg-transparent pt-20 text-slate-900"
+    >
+      <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 md:py-24 lg:grid-cols-[1.1fr_0.9fr]">
+        <div data-gsap="hero-copy">
+          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-orange-700">
+            Ruang kerja akademik
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <TestimonialCard
-            name="Andi Pratama"
-            role="Mahasiswa TI"
-            content="Merge PDF jadi lebih mudah! Bisa gabung puluhan file dalam hitungan detik tanpa install aplikasi."
-          />
-          <TestimonialCard
-            name="Siti Nurhaliza"
-            role="Mahasiswa SI"
-            content="Interface-nya simple banget, cocok buat yang ga teknis. Langsung bisa bikin laporan gabungan."
-          />
-          <TestimonialCard
-            name="Budi Santoso"
-            role="Mahasiswa Informatika"
-            content="Simpel, cepat, dan gratis. Cocok banget buat mahasiswa yang butuh tools praktis."
-          />
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="mb-20 max-w-3xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-          FAQ
-        </h2>
-        <div className="space-y-4">
-          <div className="bg-white/5 border border-purple-500/20 rounded-xl p-6">
-            <h3 className="font-semibold text-lg mb-2 text-purple-300">
-              Apakah gratis?
-            </h3>
-            <p className="text-purple-200/80">
-              Ya, semua tools 100% gratis tanpa batasan.
-            </p>
-          </div>
-          <div className="bg-white/5 border border-purple-500/20 rounded-xl p-6">
-            <h3 className="font-semibold text-lg mb-2 text-purple-300">
-              File PDF saya aman?
-            </h3>
-            <p className="text-purple-200/80">
-              Sangat aman! Semua proses merge dilakukan di browser kamu. File
-              tidak pernah diupload ke server.
-            </p>
-          </div>
-          <div className="bg-white/5 border border-purple-500/20 rounded-xl p-6">
-            <h3 className="font-semibold text-lg mb-2 text-purple-300">
-              Butuh install aplikasi?
-            </h3>
-            <p className="text-purple-200/80">
-              Tidak perlu! Bisa langsung diakses lewat browser. Atau klik
-              "Pasang di Layar Utama" untuk akses lebih cepat.
-            </p>
-          </div>
-          <div className="bg-white/5 border border-purple-500/20 rounded-xl p-6">
-            <h3 className="font-semibold text-lg mb-2 text-purple-300">
-              Ada fitur lain yang akan ditambahkan?
-            </h3>
-            <p className="text-purple-200/80">
-              Tentu! Sedang dikembangkan fitur-fitur lain yang berguna untuk
-              mahasiswa. Stay tuned!
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="mb-20 max-w-3xl mx-auto px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-          Hubungi Saya
-        </h2>
-        <p className="text-purple-200/80 mb-8">
-          Ada saran, pertanyaan, atau mau lapor bug? Kontak aja!
-        </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          <a
-            href="mailto:makhdaan7@gmail.com"
-            className="inline-flex items-center gap-2 bg-white/5 border border-purple-500/20 hover:bg-white/10 px-6 py-3 rounded-lg transition"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <h1 className="max-w-3xl text-5xl font-bold leading-[1.08] tracking-tight text-slate-950 md:text-7xl">
+            Kuliah lebih teratur, tugas lebih ringan.
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+            AMIKOM Tools mengumpulkan alat bantu akademik dalam satu tempat,
+            dari mengelola dokumen sampai menyiapkan kebutuhan kuliah.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="#fitur"
+              className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              Jelajahi fitur
+              <ArrowRight size={17} />
+            </Link>
+            <AddToHomeButton />
+          </div>
+          <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-orange-100 pt-6 text-sm text-slate-600">
+            <span className="inline-flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-orange-500" />
+              Alat bantu kuliah dalam satu tempat
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-orange-500" />
+              Mudah digunakan langsung dari browser
+            </span>
+          </div>
+        </div>
+
+        <div className="relative" data-gsap="hero-card">
+          <div className="absolute -inset-4 rounded-[2rem] border border-orange-200/70" />
+          <div className="relative rounded-3xl bg-orange-500 p-7 text-white shadow-xl shadow-orange-200/60 md:p-9">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-orange-100">
+                  AMIKOM Tools
+                </p>
+                <h2 className="mt-2 text-2xl font-bold md:text-3xl">
+                  Semua yang kamu perlukan, lebih dekat.
+                </h2>
+              </div>
+              <div className="rounded-2xl bg-white/15 p-3">
+                <ClipboardList size={28} />
+              </div>
+            </div>
+            <div className="mt-8 space-y-3">
+              <QuickFeature
+                icon={<FileText size={18} />}
+                label="Dokumen & tugas"
               />
-            </svg>
-            Email
-          </a>
-          <a
-            href="https://instagram.com/m.akhdaan__"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white/5 border border-purple-500/20 hover:bg-white/10 px-6 py-3 rounded-lg transition"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-            </svg>
-            Instagram
-          </a>
-          <a
-            href="https://github.com/AkhdaanLogics"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white/5 border border-purple-500/20 hover:bg-white/10 px-6 py-3 rounded-lg transition"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-            </svg>
-            GitHub
-          </a>
+              <QuickFeature
+                icon={<CalendarDays size={18} />}
+                label="Jadwal kuliah"
+              />
+              <QuickFeature
+                icon={<GraduationCap size={18} />}
+                label="Kebutuhan akademik"
+              />
+            </div>
+            <Link
+              href="/tools"
+              className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:gap-3"
+            >
+              Lihat semua tools
+              <ArrowRight size={16} />
+            </Link>
+          </div>
         </div>
       </section>
 
-      <footer className="text-center text-xs md:text-sm text-purple-200/80 pb-8">
-        <div>© {new Date().getFullYear()} Akhdaan The Great</div>
-        <div className="mt-2 text-purple-200/70 max-w-2xl mx-auto px-6">
-          <p>Tidak terafiliasi dengan AMIKOM Yogyakarta.</p>
-          <p className="mt-1">
-            Website ini dibuat secara independen untuk memudahkan mahasiswa
-            dalam mengerjakan tugas.
+      <section id="fitur" className="scroll-mt-28 border-y border-orange-100 bg-white/80">
+        <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+          <div className="mb-9 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-orange-700">
+                Pilih kebutuhanmu
+              </p>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">
+                Tools untuk aktivitas kuliah
+              </h2>
+              <p className="mt-3 max-w-2xl text-slate-600">
+                Mulai dari fitur yang paling sering dipakai, atau buka katalog
+                untuk melihat pilihan lainnya.
+              </p>
+            </div>
+            <Link
+              href="/tools"
+              className="inline-flex w-fit items-center gap-2 rounded-xl border border-orange-200 px-4 py-2.5 text-sm font-semibold text-orange-800 transition hover:border-orange-400 hover:bg-orange-50"
+            >
+              Semua tools
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="mb-7 max-w-xl">
+            <label
+              htmlFor="home-tool-search"
+              className="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Cari fitur yang kamu butuhkan
+            </label>
+            <div className="flex items-center gap-3 rounded-xl border border-orange-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-orange-400 focus-within:ring-4 focus-within:ring-orange-100">
+              <Search size={18} className="shrink-0 text-orange-600" />
+              <input
+                id="home-tool-search"
+                type="search"
+                value={toolQuery}
+                onChange={(event) => setToolQuery(event.target.value)}
+                placeholder="Contoh: jadwal, PDF, atau IPK"
+                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+              />
+            </div>
+            {normalizedToolQuery && (
+              <p className="mt-2 text-xs text-slate-500" aria-live="polite">
+                {visibleTools.length} fitur ditemukan dari semua tools.
+              </p>
+            )}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleTools.map((tool) => {
+              const locked = tool.requiresStudent && !isStudent;
+              const card = (
+                <FeatureCard
+                  icon={tool.icon}
+                  title={tool.title}
+                  description={tool.description}
+                  locked={locked}
+                />
+              );
+
+              return locked ? (
+                <div key={tool.title} aria-disabled="true">
+                  {card}
+                </div>
+              ) : (
+                <Link
+                  key={tool.title}
+                  href={tool.href}
+                  className="group rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-500"
+                >
+                  {card}
+                </Link>
+              );
+            })}
+            {!normalizedToolQuery && (
+              <Link
+                href="/tools"
+                className="group flex min-h-48 flex-col justify-between rounded-2xl border border-dashed border-orange-300 bg-orange-50/70 p-6 transition hover:border-orange-500 hover:bg-orange-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-500"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-orange-700 shadow-sm">
+                  <Plus size={22} />
+                </div>
+                <div className="mt-6 flex items-end justify-between gap-4">
+                  <div>
+                    <h3 className="font-semibold text-slate-900">
+                      Lihat semua tools
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-600">
+                      Buka katalog lengkap AMIKOM Tools.
+                    </p>
+                  </div>
+                  <ArrowRight
+                    size={18}
+                    className="shrink-0 text-orange-700 transition-transform group-hover:translate-x-1"
+                  />
+                </div>
+              </Link>
+            )}
+            {normalizedToolQuery && visibleTools.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center sm:col-span-2 lg:col-span-3">
+                <p className="font-medium text-slate-800">
+                  Belum ada tools yang cocok.
+                </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  Coba kata kunci lain seperti PDF, jadwal, atau dokumen.
+                </p>
+              </div>
+            )}
+          </div>
+          {!isStudent && (
+            <p className="mt-5 text-sm text-slate-500">
+              Template, bank soal, dan info dosen tersedia untuk mahasiswa
+              Amikom yang sudah masuk dengan akun kampus.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <section
+        data-gsap="reveal"
+        className="mx-auto max-w-7xl px-6 py-16 md:py-20"
+      >
+        <div className="rounded-3xl border border-orange-100 bg-white p-8 shadow-sm md:p-12">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-orange-700">
+            Catatan pembuat
+          </p>
+          <h2 className="mt-3 max-w-3xl text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">
+            Dibuat untuk membantu kuliah terasa lebih ringan.
+          </h2>
+          <p className="mt-5 max-w-2xl leading-7 text-slate-600">
+            AMIKOM Tools dibuat agar rekan mahasiswa dapat menghemat waktu,
+            menyederhanakan tugas akademik, dan fokus pada hal yang penting:
+            belajar, berkarya, dan berkembang.
+          </p>
+          <p className="mt-6 text-sm font-semibold text-slate-900">
+            Akhdaan{" "}
+            <span className="font-normal text-slate-500">
+              · Developer & Owner
+            </span>
           </p>
         </div>
+      </section>
+
+      <section
+        data-gsap="reveal"
+        className="border-y border-orange-100 bg-white/80"
+      >
+        <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+          <div className="mb-8">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-orange-700">
+              Tanya jawab
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
+              Hal yang sering ditanyakan
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <FaqCard
+              question="Apakah AMIKOM Tools gratis?"
+              answer="Ya, semua tools tersedia gratis untuk digunakan."
+            />
+            <FaqCard
+              question="Apakah file PDF saya aman?"
+              answer="Pemrosesan PDF dilakukan di browser kamu. File tidak diunggah ke server untuk fitur merge."
+            />
+            <FaqCard
+              question="Apakah perlu memasang aplikasi?"
+              answer="Tidak perlu. Website bisa langsung digunakan dari browser, dan bisa ditambahkan ke layar utama."
+            />
+            <FaqCard
+              question="Siapa yang bisa memakai fitur khusus mahasiswa?"
+              answer="Template laporan, bank soal, dan info dosen memerlukan akun mahasiswa Amikom."
+            />
+          </div>
+        </div>
+      </section>
+
+      <section
+        data-gsap="reveal"
+        className="mx-auto max-w-7xl px-6 py-16 md:py-20"
+      >
+        <div className="flex flex-col justify-between gap-8 rounded-3xl bg-slate-950 p-8 text-white md:flex-row md:items-center md:p-10">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-orange-300">
+              Ada masukan?
+            </p>
+            <h2 className="mt-2 text-3xl font-bold">Hubungi saya</h2>
+            <p className="mt-3 max-w-xl text-slate-300">
+              Punya saran, pertanyaan, atau ingin melaporkan kendala? Silakan
+              hubungi melalui kanal berikut.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <ContactLink href="mailto:makhdaan7@gmail.com" label="Email">
+              <Mail size={17} />
+            </ContactLink>
+            <ContactLink
+              href="https://instagram.com/m.akhdaan__"
+              label="Instagram"
+              external
+            >
+              <Instagram size={17} />
+            </ContactLink>
+            <ContactLink
+              href="https://github.com/AkhdaanLogics"
+              label="GitHub"
+              external
+            >
+              <Github size={17} />
+            </ContactLink>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-orange-100 bg-white/70 px-6 py-7 text-center text-sm text-slate-500">
+        <p>© {new Date().getFullYear()} Akhdaan The Great</p>
+        <p className="mx-auto mt-2 max-w-2xl text-xs leading-5">
+          Tidak terafiliasi dengan AMIKOM Yogyakarta. Website ini dibuat secara
+          independen untuk membantu mahasiswa dalam mengerjakan tugas.
+        </p>
       </footer>
 
       {toast && (
@@ -357,53 +526,99 @@ export default function HomePage() {
   );
 }
 
-function Card({
+function QuickFeature({
   icon,
-  title,
-  children,
-  disabled,
-  badge,
+  label,
 }: {
   icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-  disabled?: boolean;
-  badge?: string;
+  label: string;
 }) {
   return (
-    <div
-      className={`relative rounded-2xl border border-white/10 p-6 h-full bg-white/5 backdrop-blur shadow-xl transition
-      ${disabled ? "opacity-60 cursor-not-allowed" : "hover:-translate-y-1 hover:bg-white/10"}`}
-    >
-      {badge && (
-        <span className="absolute right-4 top-4 rounded-full bg-white/10 px-3 py-1 text-[11px] text-purple-100">
-          {badge}
-        </span>
-      )}
-      <div className="mb-4 text-purple-100">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-purple-100/90">{children}</p>
+    <div className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/10 px-4 py-3">
+      <span className="text-orange-100">{icon}</span>
+      <span className="text-sm font-medium">{label}</span>
+      <span className="ml-auto h-2 w-2 rounded-full bg-orange-200" />
     </div>
   );
 }
 
-function TestimonialCard({
-  name,
-  role,
-  content,
+function FeatureCard({
+  icon,
+  title,
+  description,
+  locked = false,
+  ...props
 }: {
-  name: string;
-  role: string;
-  content: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  locked?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      {...props}
+      className={`h-full min-h-48 rounded-2xl border bg-white p-6 transition ${
+        locked
+          ? "border-slate-200 opacity-65"
+          : "border-slate-200 shadow-sm group-hover:-translate-y-0.5 group-hover:border-orange-300 group-hover:shadow-md"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-700">
+          {icon}
+        </div>
+        {locked ? (
+          <span className="rounded-full bg-orange-50 px-3 py-1 text-[11px] font-medium text-orange-800">
+            Khusus mahasiswa
+          </span>
+        ) : (
+          <ArrowRight
+            size={18}
+            className="mt-1 text-slate-400 transition group-hover:translate-x-1 group-hover:text-orange-600"
+          />
+        )}
+      </div>
+      <h3 className="mt-5 font-semibold text-slate-900">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
+    </div>
+  );
+}
+
+function FaqCard({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-      <Quote size={24} className="mb-3 text-purple-200" />
-      <p className="text-sm text-purple-100 leading-relaxed">{content}</p>
-      <div className="mt-4 border-t border-white/10 pt-4">
-        <p className="font-semibold text-white">{name}</p>
-        <p className="text-xs text-purple-200">{role}</p>
-      </div>
-    </div>
+    <article className="rounded-2xl border border-slate-200 bg-white p-6">
+      <h3 className="font-semibold text-slate-900">{question}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{answer}</p>
+    </article>
+  );
+}
+
+function ContactLink({
+  href,
+  label,
+  external = false,
+  children,
+}: {
+  href: string;
+  label: string;
+  external?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-sm font-semibold text-white transition hover:border-orange-300 hover:bg-white/10"
+    >
+      {children}
+      {label}
+    </a>
   );
 }

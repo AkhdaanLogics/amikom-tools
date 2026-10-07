@@ -21,7 +21,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#7c3aed",
+  themeColor: "#f97316",
 };
 
 export default function RootLayout({
@@ -33,10 +33,10 @@ export default function RootLayout({
     <html lang="id">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#7c3aed" />
+        <meta name="theme-color" content="#f97316" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className={`${plusJakartaSans.className} bg-gray-50 text-gray-900`}>
+      <body className={`${plusJakartaSans.className} bg-orange-50 text-gray-900`}>
         <AuthProvider>
           <Navbar />
           {children}
